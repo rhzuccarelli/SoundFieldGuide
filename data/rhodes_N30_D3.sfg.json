@@ -1,0 +1,233 @@
+{
+ "format": "sfg-modal/1",
+ "name": "Rhodes N30 \u00b7 D3 146.83 Hz \u00b7 tone bar assembly (FE)",
+ "source": {
+  "solver": "CalculiX 2.21, *FREQUENCY, 40 modes",
+  "mesh": "87,203 nodes \u00b7 49,924 C3D10",
+  "model": "Rhodes_30.step (13 parts, bonded), rail bottom fixed",
+  "materials": "steel E200 GPa \u00b7 Al block E69 GPa \u00b7 rubber grommets E5 MPa \u00b7 plywood rail E9 GPa"
+ },
+ "reference": {
+  "deformation_mm": 1.0,
+  "point": "pickup: tine tip, vertical",
+  "note": "each mode is scaled so the tine tip moves 1 mm vertically; E is the mode's energy at that scale, w = strike point / tine tip motion (signed)"
+ },
+ "hammer": {
+  "impulse_mNs": 19.1,
+  "contact_ms": 1.5
+ },
+ "damping": {
+  "T60_1k_s": 1.1,
+  "T60_8k_s": 0.137,
+  "per_mode": "T60 per mode from assumed modal damping: 0.1 % steel, more where the mounting moves, 5 % for the rocking modes"
+ },
+ "listen": "velocity",
+ "duration_s": 6,
+ "target_hz": 146.83,
+ "modes": [
+  {
+   "mode": 1,
+   "f": 53.99,
+   "E": 0.001881,
+   "w": {
+    "6 mm": 0.2554,
+    "12 mm": 0.3129,
+    "24 mm": 0.4312
+   },
+   "T60": 0.407,
+   "label": "rocking on grommets, vertical"
+  },
+  {
+   "mode": 4,
+   "f": 164.65,
+   "E": 0.0002132,
+   "w": {
+    "6 mm": 0.0052,
+    "12 mm": 0.01984,
+    "24 mm": 0.1089
+   },
+   "T60": 6.679,
+   "label": "tine bending \u2195 \u00b7 the note",
+   "fundamental": true
+  },
+  {
+   "mode": 6,
+   "f": 510.83,
+   "E": 0.1116,
+   "w": {
+    "6 mm": -0.8411,
+    "12 mm": -0.9623,
+    "24 mm": -1.034
+   },
+   "T60": 2.07,
+   "label": "tone bar 1st bending"
+  },
+  {
+   "mode": 7,
+   "f": 674.23,
+   "E": 3.949,
+   "w": {
+    "6 mm": -0.994,
+    "12 mm": -1.101,
+    "24 mm": -1.232
+   },
+   "T60": 1.199,
+   "label": "tone bar torsion"
+  },
+  {
+   "mode": 8,
+   "f": 699.72,
+   "E": 4.3,
+   "w": {
+    "6 mm": -0.9081,
+    "12 mm": -1.041,
+    "24 mm": -1.205
+   },
+   "T60": 1.403,
+   "label": "tone bar sideways"
+  },
+  {
+   "mode": 9,
+   "f": 1216.18,
+   "E": 0.01583,
+   "w": {
+    "6 mm": -0.01257,
+    "12 mm": -0.1373,
+    "24 mm": -0.6547
+   },
+   "T60": 0.822,
+   "label": "tine 2nd bending \u2195"
+  },
+  {
+   "mode": 10,
+   "f": 1228.53,
+   "E": 3.327,
+   "w": {
+    "6 mm": 0.007291,
+    "12 mm": -0.1186,
+    "24 mm": -0.6466
+   },
+   "T60": 0.785,
+   "label": "tine 2nd bending \u2194"
+  },
+  {
+   "mode": 11,
+   "f": 1321.9,
+   "E": 1.718,
+   "w": {
+    "6 mm": -0.1545,
+    "12 mm": -0.1501,
+    "24 mm": -0.5907
+   },
+   "T60": 0.049,
+   "label": "mounting spring / grommet"
+  },
+  {
+   "mode": 14,
+   "f": 1487.17,
+   "E": 7.139,
+   "w": {
+    "6 mm": -0.6828,
+    "12 mm": -0.3579,
+    "24 mm": -0.5444
+   },
+   "T60": 0.134,
+   "label": "tone bar"
+  },
+  {
+   "mode": 22,
+   "f": 2477.64,
+   "E": 2.577,
+   "w": {
+    "6 mm": 0.8593,
+    "12 mm": 1.093,
+    "24 mm": 0.8826
+   },
+   "T60": 0.14,
+   "label": "tone bar"
+  },
+  {
+   "mode": 24,
+   "f": 2567.07,
+   "E": 20.6,
+   "w": {
+    "6 mm": 0.7453,
+    "12 mm": 1.031,
+    "24 mm": 0.9209
+   },
+   "T60": 0.023,
+   "label": "mounting spring / grommet"
+  },
+  {
+   "mode": 31,
+   "f": 3123.05,
+   "E": 7.981,
+   "w": {
+    "6 mm": 0.451,
+    "12 mm": 0.7527,
+    "24 mm": 1.086
+   },
+   "T60": 0.14,
+   "label": "tone bar"
+  },
+  {
+   "mode": 33,
+   "f": 3399.85,
+   "E": 19.09,
+   "w": {
+    "6 mm": 0.1211,
+    "12 mm": 0.4508,
+    "24 mm": 1.045
+   },
+   "T60": 0.016,
+   "label": "mounting spring / grommet"
+  },
+  {
+   "mode": 34,
+   "f": 3510.22,
+   "E": 0.2396,
+   "w": {
+    "6 mm": 0.06273,
+    "12 mm": 0.3609,
+    "24 mm": 1.024
+   },
+   "T60": 0.27,
+   "label": "tine"
+  },
+  {
+   "mode": 35,
+   "f": 3516.17,
+   "E": 0.2151,
+   "w": {
+    "6 mm": 0.06043,
+    "12 mm": 0.3588,
+    "24 mm": 1.025
+   },
+   "T60": 0.237,
+   "label": "tine"
+  }
+ ],
+ "strikes": [
+  {
+   "id": "6 mm",
+   "label": "6 mm from the block face",
+   "color": "#6d6d6a"
+  },
+  {
+   "id": "12 mm",
+   "label": "12 mm from the block face",
+   "default": true,
+   "color": "#ff4f00"
+  },
+  {
+   "id": "24 mm",
+   "label": "24 mm from the block face",
+   "color": "#3a5fc4"
+  }
+ ],
+ "figure": {
+  "src": "data/rhodes_N30_D3.webp",
+  "alt": "Isometric view of the Rhodes N30 D3 tone bar assembly from below: rail segment, grommets and springs, tone generator block, tone bar with slot and 90 degree twist, and the 84.9 mm tine with its tuning spring. Three arrows push up on the underside of the tine at 6, 12 and 24 mm from the block face.",
+  "caption": "Hammer pushes up on the underside of the tine. Distances measured from the block face. 12 mm is the reference strike used in the modal data; 6 and 24 mm bracket it."
+ }
+}

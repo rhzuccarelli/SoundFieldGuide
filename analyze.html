@@ -148,6 +148,15 @@ td.flag { color: var(--accent); font-weight: 600; }
 .mtab td.calc i { font-style: normal; color: var(--muted); font-size: 10px; display: block; text-transform: uppercase; letter-spacing: .05em; }
 .mtab button { font: 500 12px/1 var(--f-mono); background: none; border: 0; color: var(--muted); cursor: pointer; padding: 4px 6px; }
 .mtab button:hover { color: var(--accent); }
+.mtab td.mname { white-space: nowrap; }
+.mtab td.mname i { display: block; font: 400 10px/1.3 var(--f-mono); font-style: normal; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); white-space: normal; max-width: 15em; }
+.lab.over { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 6%, var(--panel)); }
+.m-file-name { font: 500 11px/1.4 var(--f-mono); text-transform: uppercase; letter-spacing: .06em; }
+a.key { display: inline-block; text-decoration: none; }
+.key .sw { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+.mfig { margin: 14px 0 0; }
+.mfig img { display: block; width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--line); background: #ececea; }
+.mfig figcaption { font: 400 13px/1.5 var(--f-sans); color: var(--muted); margin-top: 8px; max-width: 46em; }
 .mpaste { margin-top: 12px; }
 .mpaste summary { cursor: pointer; padding: 4px 0; }
 .mpaste textarea { display: block; width: 100%; margin: 8px 0; font: 400 12.5px/1.5 var(--f-mono); padding: 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); resize: vertical; }
@@ -376,7 +385,14 @@ footer { padding-top: 40px; font: 400 11px/1.6 var(--f-mono); text-transform: up
           <div class="seg" style="margin-top:10px">
             <button class="key" type="button" id="m-add">+ mode</button>
             <button class="key" type="button" id="m-reset">reset to the example tine</button>
+            <button class="key" type="button" id="m-rhodes">load the Rhodes N30 · D3 file</button>
+            <span class="key file-btn">import .json<input id="m-file" type="file" accept=".json,application/json" aria-label="import a modal data file"></span>
+            <button class="key" type="button" id="m-export">export .json</button>
+            <a class="key" href="data/template.sfg.json" download="template.sfg.json">download template</a>
+            <span class="status" id="m-status" role="status"></span>
           </div>
+          <div class="seg" id="m-strikes" style="margin-top:10px" hidden><span class="ctl-label">strike point</span></div>
+          <figure class="mfig" id="m-fig" hidden><img id="m-fig-img" alt="" loading="lazy"><figcaption id="m-fig-cap"></figcaption></figure>
           <details class="mpaste">
             <summary class="ctl-label">paste a mode list</summary>
             <textarea id="m-text" rows="5" spellcheck="false" placeholder="Mode 1 (1161 Hz) 0.012 J&#10;Mode 2 (1192 Hz)&#10;Mode 3 (2249 Hz) 0.05 J"></textarea>
@@ -412,6 +428,19 @@ footer { padding-top: 40px; font: 400 11px/1.6 var(--f-mono); text-transform: up
           <p>The two damping knobs set the decay time at 1 kHz and at 8 kHz. Every mode in between follows a standard engineering model, <b>Rayleigh damping</b>. To set them from reality, record the real part, load it in chapter 1 and read the T60 values in the harmonics table in chapter 4.</p>
         </div>
         <div class="note try">Look at modes 1 and 2 in the example: 1161 and 1192 Hz. They are the same bending in two directions (up-down and sideways), almost but not quite equal. Together they <b>beat</b> 31 times a second. That is too fast to hear as a wobble in loudness (the tremolo readout only looks at 1–15 Hz). Instead it sounds rough, and it shows as a fine ripple in the waveform and the spectrogram. Lower the frequency of mode 2 towards 1161 Hz and the roughness slows down into an audible "wah-wah". Real tines are shaped and tuned so that this pair either matches or sits well apart.</div>
+        <h3><span class="n">8.3</span>bring your own simulation</h3>
+        <div class="prose">
+          <p>A whole assembly has many more modes than a tine on its own: the tone bar bends and twists, the block rocks on its rubber grommets, the mounting springs bounce. To bring such a solve here, save it as a <b>modal data file</b>, a small <code>.json</code> in the format <code>sfg-modal/1</code>, and drop it on the lab above (or press <kbd>import .json</kbd>). The file fills the table and the knobs, can give every mode its own T60, and can hold several <b>strike points</b>. Buttons appear to switch between them, so you can hear what moving the hammer does.</p>
+          <p>For a file, <i>w</i> is the strike point's motion divided by the listening point's motion, <b>signed</b>. It can be negative (that point moves the other way in this mode) or above 1. From mass-normalised mode shapes φ, with listening point <i>p</i>, strike point <i>s</i> and reference deformation <i>d</i>:</p>
+          <p><code>m = 1 / φ(p)²</code> &nbsp; <code>E = ½ · m · ω² · d²</code> &nbsp; <code>w = φ(s) / φ(p)</code></p>
+          <p>The page then gives each mode the starting speed <code>v = J · w · H(ω) / m</code>, where H is the spectrum of the half-sine hammer. That is exact modal superposition for a short point blow, so the note you hear is the simulated response at the pickup.</p>
+        </div>
+        <figure class="mfig">
+          <img src="data/rhodes_N30_D3.webp" width="2000" height="1200" loading="lazy" alt="Isometric view of the Rhodes N30 D3 tone bar assembly from below: rail segment, grommets and springs, tone generator block, tone bar with slot and 90 degree twist, and the 84.9 mm tine with its tuning spring. Three arrows push up on the underside of the tine at 6, 12 and 24 mm from the block face.">
+          <figcaption>The example file: a Rhodes tone bar assembly for the note D3 (146.83 Hz), 13 parts, about 87,000 nodes in CalculiX. The hammer pushes up on the underside of the tine at 6, 12 or 24 mm from the block face. The file has 15 modes that the pickup can hear.</figcaption>
+        </figure>
+        <div class="note try">Press <kbd>load the Rhodes N30 · D3 file</kbd>. At the 12 mm strike the note (mode 4, 165 Hz in this model) is the strongest mode, but the tone bar's first bending at 511 Hz is only about 6 dB below it and the tine's second bending at 1216 Hz about 9 dB below. Both die away much faster than the note: together they make the bright attack, the Rhodes "bark". Switch to <b>24 mm</b>: the hammer now hits where the tine's first bending moves more, the note gets about 5 times (15 dB) stronger, and the tone bar falls back to about 20 dB below it, so the attack is rounder. Switch to <b>6 mm</b>, right next to the block: the tone bar becomes the loudest mode, about 5 dB above the note.</div>
+        <div class="note">To make a file for your own part, press <kbd>download template</kbd>. The template is a filled-in example with an <code>instructions</code> block that explains every step (you can hand it to a person, a script or an AI model together with the solver output), and a <code>figure.spec</code> block that describes the drawing to make from the STEP file in the same style as the one above: canvas, isometric view, shading, labels, the coloured strike arrows. Put the image's path in <code>figure.src</code> and the lab shows it when the file loads. The full field list is in <a href="MODAL_FORMAT.md">MODAL_FORMAT.md</a>.</div>
         <div class="note">Check your tool before trusting the numbers. Set the display deformation to 2 mm: if the energy becomes four times bigger (0.048 J instead of 0.012 J), the value is the mode's strain energy at that scale, and the formulas above apply. The model leaves out the hammer's bounce, the exact strike and pickup points (only approximated by <i>w</i>), the pickup's non-linearity and the air. It is a well-founded first sketch of the sound, not a recording.</div>
       </div>
     </section>
@@ -794,8 +823,10 @@ function modalModel() {
     const om = TAU * r.f, assumed = !(r.E > 0), m = assumed ? mRef : 2 * r.E / (d * d) / (om * om), k = m * om * om;
     // half-sine hammer pulse of length tc: its spectrum weights each mode (1 at low frequency)
     const u = om * tc / Math.PI, hw = tc ? (Math.abs(1 - u * u) < 1e-6 ? Math.PI / 4 : Math.abs(Math.cos(om * tc / 2) / (1 - u * u))) : 1;
-    const v = J * Math.max(0, Math.min(1, r.w)) * hw / m, sigma = Math.max(0.05, (alpha + beta * om * om) / 2);
-    return { r, f: r.f, om, m, k, assumed, v, x: v / om, E: 0.5 * m * v * v, sigma, T60: 6.91 / sigma, A: v * Math.pow(om, MO.out - 1) };
+    // imported rows keep their signed w (it can be < 0 or > 1); hand-typed rows stay in 0–1
+    const wv = r.free ? (isFinite(r.w) ? r.w : 0) : Math.max(0, Math.min(1, r.w));
+    const v = J * wv * hw / m, sigma = r.T60 > 0 ? 6.91 / r.T60 : Math.max(0.05, (alpha + beta * om * om) / 2);
+    return { r, f: r.f, om, m, k, assumed, v, x: v / om, E: 0.5 * m * v * v, sigma, T60: 6.91 / sigma, sign: v < 0 ? -1 : 1, A: Math.abs(v) * Math.pow(om, MO.out - 1) };
   });
   const Amax = Math.max(1e-30, ...modes.map(q => q.A));
   modes.forEach(q => q.db = 20 * Math.log10(Math.max(q.A, 1e-30) / Amax));
@@ -806,7 +837,7 @@ function modalSynth() {
   for (const q of M.modes) {
     if (!(q.A > 0)) continue;
     const c = Math.cos(q.om / sr), sn = Math.sin(q.om / sr), dec = Math.exp(-q.sigma / sr);
-    let re = Math.cos(ph), im = Math.sin(ph), a = q.A;   // rotating phasor: fast and exact enough for a few seconds
+    let re = Math.cos(ph), im = Math.sin(ph), a = q.A * q.sign;   // rotating phasor: fast and exact enough for a few seconds
     for (let i = 0; i < n; i++) { x[i] += a * im; const r2 = re * c - im * sn; im = re * sn + im * c; re = r2; a *= dec; }
   }
   const on = Math.round(sr * 0.001), fade = Math.round(sr * 0.08);
@@ -821,7 +852,8 @@ function renderModalTable() {
     const tr = el("tr"), cell = (key, step) => { const td = el("td"), inp = el("input"); inp.type = "number"; inp.step = step; inp.value = r[key] == null ? "" : r[key]; if (key === "E") inp.placeholder = "assume"; inp.setAttribute("aria-label", key + " of mode " + (i + 1)); inp.addEventListener("input", () => { const v = parseFloat(inp.value); r[key] = isFinite(v) ? v : (key === "E" ? null : 0); updateModal(); }); td.append(inp); return td; };
     const del = el("button", null, "×"); del.type = "button"; del.setAttribute("aria-label", "remove mode " + (i + 1)); del.addEventListener("click", () => { MR.splice(i, 1); renderModalTable(); updateModal(); });
     const tdDel = el("td"); tdDel.append(del);
-    tr.append(el("td", null, String(i + 1)), cell("f", "1"), cell("E", "0.001"), cell("w", "0.1"), el("td", "calc"), el("td", "calc"), el("td", "calc"), el("td", "calc"), tdDel);
+    const tdName = el("td", "mname", r.mode != null ? String(r.mode) : String(i + 1)); if (r.label) tdName.append(el("i", null, r.label));
+    tr.append(tdName, cell("f", "1"), cell("E", "0.001"), cell("w", r.free ? "0.01" : "0.1"), el("td", "calc"), el("td", "calc"), el("td", "calc"), el("td", "calc"), tdDel);
     tb.append(tr);
   });
 }
@@ -832,13 +864,14 @@ function updateModal() {
     const put = (j, main, sub) => { c[j].replaceChildren(document.createTextNode(main)); if (sub) c[j].append(el("i", null, sub)); };
     if (!q) { [4, 5, 6, 7].forEach(j => put(j, "—")); return; }
     put(4, fmtSig(q.k), q.assumed ? "assumed" : ""); put(5, (q.m * 1000).toFixed(q.m < 1e-4 ? 4 : 3), q.assumed ? "= mode " + (MR.findIndex(o => o.E > 0) + 1 || "?") : "");
-    put(6, q.T60.toFixed(q.T60 < 1 ? 2 : 1)); put(7, q.db.toFixed(1) + " dB");
+    put(6, q.T60.toFixed(q.T60 < 1 ? 2 : 1), r.T60 > 0 ? "from file" : ""); put(7, q.db.toFixed(1) + " dB");
   });
   const pairs = [];
   for (let i = 0; i < M.modes.length; i++) for (let j = i + 1; j < M.modes.length; j++) { const df = Math.abs(M.modes[i].f - M.modes[j].f); if (df > 0 && df < 60) pairs.push(`${M.modes[i].f} / ${M.modes[j].f} Hz → ${df.toFixed(df < 10 ? 1 : 0)} Hz`); }
   const Et = M.modes.reduce((a, q) => a + q.E, 0), top = M.modes.slice().sort((a, b) => b.A - a.A)[0];
   readout("ro-modal", [["energy from the hammer", Et ? (Et * 1000).toPrecision(3) + " mJ" : "—"], ["loudest mode", top ? top.f + " Hz · T60 " + top.T60.toFixed(2) + " s" : "—"],
     ["beating", pairs.length ? pairs.join(" · ") : "none (no modes closer than 60 Hz)"],
+    ...(MFILE.name ? [["file", MFILE.name + (MFILE.strike ? " · strike " + MFILE.strike : "")]] : []),
     ...(M.anyAssumed ? [["assumed", M.hasRef ? "modes without energy use the same mass as the first mode with one" : "no energy given: all modes use 0.5 g"]] : [])]);
   drawModal(M);
 }
@@ -851,11 +884,11 @@ function drawModal(M) {
     const X = f => PAD.l + Math.log(f / lo) / Math.log(hi / lo) * (w - PAD.l - PAD.r), Y = yAxis(g, w, h, -60, 0, 12, v => String(v));
     g.font = "400 9.5px 'IBM Plex Mono', monospace"; g.textAlign = "center"; g.textBaseline = "top"; g.fillStyle = C["screen-dim"];
     for (const f of [50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000]) if (f > lo && f < hi) g.fillText(f >= 1000 ? f / 1000 + "k" : String(f), X(f), h - PAD.b + 6);
-    const f1 = M.modes[0] && M.modes[0].f;
+    const fm = M.modes.find(q => q.r.fundamental) || M.modes[0], f1 = fm && fm.f;   // a file can flag its note mode as the ×1 reference
     if (f1) { g.strokeStyle = C["screen-grid"]; g.setLineDash([3, 4]); g.lineWidth = 1; g.beginPath(); for (let n = 2; n * f1 < hi; n++) { const xx = Math.round(X(n * f1)) + .5; g.moveTo(xx, PAD.t); g.lineTo(xx, h - PAD.b); } g.stroke(); g.setLineDash([]); }
     M.modes.forEach((q, i) => {
       const xx = X(q.f), y = Y(Math.max(-60, q.db));
-      g.fillStyle = i === 0 ? C["screen-accent"] : C["screen-ink"]; g.fillRect(xx - 1.5, y, 3, h - PAD.b - y);
+      g.fillStyle = q === fm ? C["screen-accent"] : C["screen-ink"]; g.fillRect(xx - 1.5, y, 3, h - PAD.b - y);
       if (f1) { g.fillStyle = C["screen-dim"]; g.textBaseline = "bottom"; g.fillText("×" + (q.f / f1).toFixed(2), xx, Math.max(PAD.t + 22 + (i % 2) * 11, y - 3 - (i % 2) * 11)); }
     });
   }
@@ -879,12 +912,100 @@ function parseModes(text) {
   }
   return out;
 }
+/* ---- modal data files: format "sfg-modal/1" (see MODAL_FORMAT.md) ----
+   { "format": "sfg-modal/1", "name": "…",
+     "reference": { "deformation_mm": 1, "point": "where each mode was scaled to the reference deformation" },
+     "hammer": { "impulse_mNs": 2, "contact_ms": 0.4 },
+     "damping": { "T60_1k_s": 4, "T60_8k_s": 0.4 },          // used for modes without their own T60
+     "listen": "displacement" | "velocity" | "acceleration",
+     "duration_s": 4,
+     "strikes": [ { "id": "12 mm", "default": true }, … ],      // optional
+     "modes": [ { "mode": 4, "f": 164.6, "E": 0.00021, "w": 0.02 | { "12 mm": 0.02, … }, "T60": 6.7, "label": "…" } ] } */
+const MFILE = { name: "", strike: "", strikes: [], meta: {}, figure: null };   // meta: id → { label, color } from the file
+const mstatus = (msg, err) => { const s = $("m-status"); s.textContent = msg || ""; s.classList.toggle("err", !!err); };
+function setKnob(id, v) { if (v != null && isFinite(+v)) $(id).value = +v; }
+function renderStrikes() {
+  const box = $("m-strikes"); box.querySelectorAll("button").forEach(b => b.remove());
+  box.hidden = MFILE.strikes.length < 2;
+  MFILE.strikes.forEach(id => {
+    const b = el("button", "key"), meta = MFILE.meta[id] || {}; b.type = "button"; b.setAttribute("aria-pressed", String(id === MFILE.strike));
+    if (meta.color) { const sw = el("span", "sw"); sw.style.background = meta.color; b.append(sw); }
+    b.append(document.createTextNode(id)); if (meta.label) b.title = meta.label;
+    b.addEventListener("click", () => { useStrike(id); renderStrikes(); });
+    box.append(b);
+  });
+}
+// a file can carry a drawing of the part (figure.src: a path next to this page, a web address or a data: URI)
+function renderFigure(fig) {
+  const box = $("m-fig"), img = $("m-fig-img"), src = fig && typeof fig.src === "string" ? fig.src.trim() : "";
+  const ok = src && (/^data:image\//i.test(src) || /^https?:\/\//i.test(src) || !/^[a-z][\w+.-]*:/i.test(src));
+  MFILE.figure = fig || null;
+  if (!ok) { box.hidden = true; img.removeAttribute("src"); return; }
+  img.onerror = () => { box.hidden = true; mstatus("the file's figure " + src.slice(0, 60) + " could not be loaded", true); };
+  img.onload = () => { box.hidden = false; };
+  img.alt = fig.alt || "drawing of the simulated part"; $("m-fig-cap").textContent = fig.caption || ""; img.src = src;
+}
+function useStrike(id) {
+  MFILE.strike = id;
+  MR.forEach(r => { if (r.wMap && id in r.wMap) r.w = r.wMap[id]; });
+  renderModalTable(); updateModal();
+}
+function importModal(doc, fname) {
+  if (!doc || !Array.isArray(doc.modes)) throw new Error("no \"modes\" list in the file");
+  if (doc.format && !/^sfg-modal\/1/.test(doc.format)) throw new Error("unknown format " + doc.format);
+  const strikes = Array.isArray(doc.strikes) ? doc.strikes.map(s => typeof s === "string" ? s : s.id).filter(Boolean) : [];
+  const def = Array.isArray(doc.strikes) && doc.strikes.find(s => s && s.default) ;
+  const first = def ? def.id : strikes[0] || "";
+  const meta = {}; if (Array.isArray(doc.strikes)) doc.strikes.forEach(s => { if (s && typeof s === "object" && s.id) meta[s.id] = { label: typeof s.label === "string" ? s.label : "", color: typeof s.color === "string" && /^#[0-9a-f]{3,8}$/i.test(s.color) ? s.color : "" }; });
+  const rows = doc.modes.map(m => {
+    const f = +m.f || +m.frequency_Hz; if (!(f > 0)) return null;
+    const wMap = m.w && typeof m.w === "object" ? m.w : null;
+    const w = wMap ? (first in wMap ? +wMap[first] : +Object.values(wMap)[0]) : (m.w == null ? 1 : +m.w);
+    return { f, E: m.E > 0 ? +m.E : null, w, wMap, T60: m.T60 > 0 ? +m.T60 : null, label: m.label || "", mode: m.mode != null ? m.mode : null, fundamental: !!m.fundamental, free: true };
+  }).filter(Boolean);
+  if (!rows.length) throw new Error("the file has no modes with a frequency");
+  const R = doc.reference || {}, H = doc.hammer || {}, D = doc.damping || {};
+  setKnob("m-ref", R.deformation_mm); setKnob("m-imp", H.impulse_mNs); setKnob("m-tc", H.contact_ms);
+  setKnob("m-t1", D.T60_1k_s); setKnob("m-t8", D.T60_8k_s); setKnob("m-dur", doc.duration_s);
+  const out = { displacement: 0, velocity: 1, acceleration: 2 }[doc.listen];
+  if (out != null) { MO.out = out; document.querySelectorAll("[data-mout]").forEach(o => o.setAttribute("aria-pressed", String(+o.dataset.mout === out))); }
+  MR = rows; MFILE.name = doc.name || fname || "modal file"; MFILE.strikes = strikes; MFILE.strike = first; MFILE.meta = meta;
+  renderModalTable(); renderStrikes(); renderFigure(doc.figure); updateModal();
+  mstatus(rows.length + " modes loaded" + (strikes.length > 1 ? " · " + strikes.length + " strike points" : ""));
+}
+function loadModalFile(file) {
+  if (!file) return;
+  file.text().then(t => importModal(JSON.parse(t), file.name)).catch(e => mstatus("could not read " + file.name + ": " + e.message, true));
+}
+function exportModal() {
+  const doc = { format: "sfg-modal/1", name: MFILE.name || "modal synthesis", reference: { deformation_mm: mval("m-ref") },
+    hammer: { impulse_mNs: mval("m-imp"), contact_ms: mval("m-tc") }, damping: { T60_1k_s: mval("m-t1"), T60_8k_s: mval("m-t8") },
+    listen: ["displacement", "velocity", "acceleration"][MO.out], duration_s: mval("m-dur") };
+  if (MFILE.strikes.length) doc.strikes = MFILE.strikes.map(id => { const o = { id }, m = MFILE.meta[id] || {}; if (m.label) o.label = m.label; if (m.color) o.color = m.color; if (id === MFILE.strike) o.default = true; return o; });
+  doc.modes = MR.map((r, i) => { const o = { mode: r.mode != null ? r.mode : i + 1, f: r.f }; if (r.E > 0) o.E = r.E; o.w = r.wMap ? Object.assign({}, r.wMap, MFILE.strike ? { [MFILE.strike]: r.w } : {}) : r.w; if (r.T60 > 0) o.T60 = r.T60; if (r.label) o.label = r.label; if (r.fundamental) o.fundamental = true; return o; });
+  if (MFILE.figure) doc.figure = MFILE.figure;
+  const a = el("a"); a.href = URL.createObjectURL(new Blob([JSON.stringify(doc, null, 1)], { type: "application/json" }));
+  a.download = (doc.name.replace(/[^\w\-]+/g, "_").slice(0, 60) || "modal") + ".sfg.json"; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+$("m-file").addEventListener("change", e => { loadModalFile(e.target.files[0]); e.target.value = ""; });
+$("m-export").addEventListener("click", exportModal);
+$("m-rhodes").addEventListener("click", () => {
+  mstatus("loading…");
+  fetch("data/rhodes_N30_D3.sfg.json").then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }).then(d => importModal(d, "rhodes_N30_D3.sfg.json"))
+    .catch(e => mstatus("could not load the example (" + e.message + "). Opened from disk? Serve the folder, or use import .json on data/rhodes_N30_D3.sfg.json", true));
+});
+{
+  const lab = $("mtab").closest(".lab");
+  ["dragenter", "dragover"].forEach(t => lab.addEventListener(t, e => { if ([...e.dataTransfer.items].some(i => i.kind === "file")) { e.preventDefault(); lab.classList.add("over"); } }));
+  ["dragleave", "drop"].forEach(t => lab.addEventListener(t, () => lab.classList.remove("over")));
+  lab.addEventListener("drop", e => { e.preventDefault(); loadModalFile(e.dataTransfer.files[0]); });
+}
 renderModalTable();
 ["m-ref", "m-imp", "m-tc", "m-t1", "m-t8", "m-dur"].forEach(id => $(id).addEventListener("input", () => updateModal()));
 document.querySelectorAll("[data-mout]").forEach(b => b.addEventListener("click", () => { MO.out = +b.dataset.mout; document.querySelectorAll("[data-mout]").forEach(o => o.setAttribute("aria-pressed", String(o === b))); updateModal(); }));
 $("m-add").addEventListener("click", () => { const last = MR[MR.length - 1]; MR.push({ f: last ? Math.round(last.f * 1.5) : 1000, E: null, w: 1 }); renderModalTable(); updateModal(); });
-$("m-reset").addEventListener("click", () => { MR = MODAL_EXAMPLE.map(([f, E]) => ({ f, E, w: 1 })); renderModalTable(); updateModal(); });
-$("m-parse").addEventListener("click", () => { const m = parseModes($("m-text").value); if (m.length) { MR = m; renderModalTable(); updateModal(); } });
+$("m-reset").addEventListener("click", () => { MR = MODAL_EXAMPLE.map(([f, E]) => ({ f, E, w: 1 })); MFILE.name = ""; MFILE.strike = ""; MFILE.strikes = []; MFILE.meta = {}; renderStrikes(); renderFigure(null); mstatus(""); renderModalTable(); updateModal(); });
+$("m-parse").addEventListener("click", () => { const t = $("m-text").value.trim(); if (t[0] === "{") { try { importModal(JSON.parse(t), "pasted"); } catch (e) { mstatus("could not read the pasted JSON: " + e.message, true); } return; } const m = parseModes(t); if (m.length) { MR = m; MFILE.name = ""; MFILE.strike = ""; MFILE.strikes = []; MFILE.meta = {}; renderStrikes(); renderFigure(null); renderModalTable(); updateModal(); } });
 $("m-play").addEventListener("click", () => { const { x, sr } = modalSynth(); playArray(x, sr); });
 $("m-analyse").addEventListener("click", () => {
   const { x, sr } = modalSynth();

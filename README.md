@@ -31,7 +31,7 @@ Load a recording of a single note (or one of five synthetic examples: piano stri
 5. **Harmonic decay**: levels of harmonics 1–8 over time (bark, beating).
 6. **Pitch & brightness**: YIN pitch track in cents and spectral centroid.
 7. **Resynthesis**: compare static vs. tracked additive rebuilds with the original.
-8. **From simulation to sound**: paste a modal (FEA) mode list with energies, get each mode's stiffness and effective mass, a hammer-impulse level estimate, Rayleigh damping from two T60 knobs, static and dynamic plots, playback, and a hand-off to the analysis chapters.
+8. **From simulation to sound**: paste a modal (FEA) mode list with energies, get each mode's stiffness and effective mass, a hammer-impulse level estimate, Rayleigh damping from two T60 knobs, static and dynamic plots, playback, and a hand-off to the analysis chapters. Import a whole simulation as a `.json` modal file (`sfg-modal/1`, see `MODAL_FORMAT.md`) with per-mode T60, signed strike participation, several strike points to switch between and an isometric drawing of the part. A worked example (a Rhodes N30 D3 tone bar assembly, `data/rhodes_N30_D3.sfg.json`) and a downloadable template with fill-in instructions and the drawing's style brief (`data/template.sfg.json`) are included.
 9. **How deep can we go**: what is measurable, what makes pianos, brass, bowed strings, flutes, guitars and the Rhodes hard to simulate, and the limits.
 
 ## Colour & Saturation — `effects.html`

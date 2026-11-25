@@ -1,0 +1,101 @@
+{
+ "format": "sfg-modal/1",
+ "name": "template · replace with your part",
+ "instructions": {
+  "about": "Fill this file from a modal (finite-element) solve so the Sound Microscope (analyze.html#modal) can play it. Fields named 'instructions', 'source' and 'figure.spec' are ignored by the page; keep or delete them.",
+  "steps": [
+   "1. Solve the natural modes of the part or assembly (e.g. CalculiX *FREQUENCY, Abaqus, COMSOL, Ansys) with mass-normalised mode shapes phi (phi^T M phi = 1).",
+   "2. Pick the listening point p (for a pickup: the tine tip, in the pickup's direction) and one or more strike points s.",
+   "3. For every mode i: f = frequency in Hz; m_i = 1 / phi_i(p)^2; E_i = 0.5 * m_i * (2*pi*f)^2 * d^2 with d = reference.deformation_mm / 1000; w_i = phi_i(s) / phi_i(p), signed, one value per strike id.",
+   "4. Leave out modes where phi(p) is close to 0: they are silent at the pickup.",
+   "5. Optionally give each mode its own T60 in seconds (from measurement or assumed modal damping zeta: T60 = 6.91 / (zeta * 2*pi*f)). Modes without T60 use the two damping knobs.",
+   "6. Mark the mode that is the played note with \"fundamental\": true.",
+   "7. Render the figure described in figure.spec from the STEP file, save it next to this file, and put its path (relative to analyze.html) or a data: URI in figure.src.",
+   "8. Drop the file on the lab in chapter 8, or use import .json."
+  ],
+  "units": "f Hz · E J · w dimensionless · T60 s · impulse mN·s · contact ms · deformation mm"
+ },
+ "source": {
+  "solver": "",
+  "mesh": "",
+  "model": "",
+  "materials": ""
+ },
+ "reference": {
+  "deformation_mm": 1,
+  "point": "pickup point, e.g. tine tip, vertical"
+ },
+ "hammer": {
+  "impulse_mNs": 2,
+  "contact_ms": 0.4
+ },
+ "damping": {
+  "T60_1k_s": 4,
+  "T60_8k_s": 0.4
+ },
+ "listen": "velocity",
+ "duration_s": 4,
+ "strikes": [
+  {
+   "id": "near",
+   "label": "near strike, e.g. 6 mm from the clamp",
+   "color": "#6d6d6a"
+  },
+  {
+   "id": "reference",
+   "label": "reference strike used for the default sound",
+   "color": "#ff4f00",
+   "default": true
+  },
+  {
+   "id": "far",
+   "label": "far strike, e.g. 24 mm from the clamp",
+   "color": "#3a5fc4"
+  }
+ ],
+ "modes": [
+  {
+   "mode": 1,
+   "f": 1161,
+   "E": 0.012,
+   "w": {
+    "near": 0.2,
+    "reference": 0.4,
+    "far": 0.6
+   },
+   "label": "bending, vertical · the note",
+   "fundamental": true
+  },
+  {
+   "mode": 2,
+   "f": 2249,
+   "E": 0.05,
+   "w": {
+    "near": -0.4,
+    "reference": -0.15,
+    "far": 0.1
+   },
+   "T60": 1.2,
+   "label": "2nd bending"
+  }
+ ],
+ "figure": {
+  "src": "",
+  "alt": "Isometric view of the part, with arrows at each strike point",
+  "caption": "Where the hammer strikes. Distances measured from the clamp face.",
+  "spec": {
+   "purpose": "One explanatory drawing of the simulated part, generated from its STEP file, showing what was modelled and where each strike point is. Same style as data/rhodes_N30_D3.webp.",
+   "canvas": "2000 x 1200 px, landscape 5:3, WebP or PNG, under 300 kB. Flat background #ececea, no border, no shadow under the model.",
+   "view": "True isometric projection of the STEP geometry, seen slightly from below and in front so the struck face is visible. Model fills the middle ~70 % of the width, leaving room for callouts. No perspective.",
+   "shading": "Flat light-grey solids (#d6d6d2 lit faces, #bdbdb9 side faces, thin #9a9a96 edges). Rubber parts (grommets, felt) near-black #2b2b2b. The part that vibrates and is struck (tine, bar, string) darkest, #3a3a3a. Fasteners and springs mid grey with visible coils. Fixed parts may be slightly transparent to show hidden screws.",
+   "kicker": "Top left at x=70, y=75: part name, note and assembly in IBM Plex Mono 400, 22 px, uppercase, letter-spacing 0.06em, #6d6d6a, items separated by ' · '. Example: RHODES N30 · D3 · TONE BAR ASSEMBLY.",
+   "title": "Below the kicker at y=145: 'where the hammer strikes' in Archivo 700 (or Inter Bold), 64 px, #111111, lowercase, tight letter-spacing -0.02em.",
+   "callouts": "One per main part: IBM Plex Mono 400, 18 px, UPPERCASE, #222222, with a straight 1.5 px #222222 leader line from the label to the part. Add key dimensions after ' · ' (e.g. 'TINE · 84.9 mm', 'TONE BAR · 156 mm, slot + 90° twist'). Mark fixed boundaries '(fixed)'. Labels outside the model, never crossing it.",
+   "datum": "A dotted 1.5 px #222222 line at the zero of the strike distances, labelled in mono 18 px lowercase, e.g. 'block face = 0', with a thin dimension line along the struck part.",
+   "strikes": "One vertical arrow per strike id, pushing on the struck face in the hammer direction, 4 px shaft, solid triangular head, round dot at the contact point. Colours from strikes[].color: secondary #6d6d6a, default #ff4f00, tertiary #3a5fc4. Under each arrow its distance in IBM Plex Mono 20 px in the arrow colour; the default strike's label 500 weight and slightly larger. Arrows may be staggered in length so labels do not overlap.",
+   "pickup": "Optional: a 2 px #ff4f00 ring at the listening (reference) point, labelled 'pickup · reference point' in mono 16 px.",
+   "footer": "Bottom left at y=1110: two lines of Archivo 600, 22 px, #111111 that say what pushes where and which strike is the reference (this text also goes in figure.caption). Bottom right: 'isometric · not to scale for arrows' in IBM Plex Mono 400, 18 px, #6d6d6a.",
+   "accessibility": "Write figure.alt as a full sentence listing the parts and the strike positions, for readers who cannot see the image."
+  }
+ }
+}
