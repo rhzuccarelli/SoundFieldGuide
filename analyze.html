@@ -99,7 +99,7 @@ kbd { font: 500 11px/1 var(--f-mono); text-transform: uppercase; letter-spacing:
   font-variant-numeric: tabular-nums;
 }
 .readout { display: flex; flex-wrap: wrap; gap: 6px 18px; padding: 10px 2px 2px; font: 400 11px/1.4 var(--f-mono); text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-variant-numeric: tabular-nums; }
-.readout b { color: var(--ink); font-weight: 500; }
+.readout b { color: var(--ink); font-weight: 500; text-transform: none; }   /* values keep their case: mJ is not MJ, ms is not MS */
 .key { font: 500 11px/1 var(--f-mono); text-transform: uppercase; letter-spacing: .06em; background: transparent; color: var(--ink); border: 1px solid var(--ink); border-radius: 999px; padding: 7px 11px; cursor: pointer; }
 .key:hover { background: color-mix(in srgb, var(--ink) 8%, transparent); }
 .key[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
