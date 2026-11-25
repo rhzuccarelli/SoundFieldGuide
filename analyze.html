@@ -23,18 +23,20 @@
   --screen-dim: #6a6d72;
   --screen-grid: #25272a;
   --screen-accent: #ff5a0f;
+  --s-blue: #7f9cff;
+  --blue: #3a5fc4;
   --f-sans: "Archivo", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #111112; --panel: #19191b; --ink: #ececea; --muted: #8f8f8c; --line: #313133;
-    --accent: #ff6a1f; --on-accent: #111112; color-scheme: dark;
+    --accent: #ff6a1f; --on-accent: #111112; --blue: #7f9cff; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #111112; --panel: #19191b; --ink: #ececea; --muted: #8f8f8c; --line: #313133;
-  --accent: #ff6a1f; --on-accent: #111112; color-scheme: dark;
+  --accent: #ff6a1f; --on-accent: #111112; --blue: #7f9cff; color-scheme: dark;
 }
 * { box-sizing: border-box; }
 body { margin: 0; background: var(--bg); color: var(--ink); font: 400 16px/1.55 var(--f-sans); }
@@ -157,6 +159,18 @@ a.key { display: inline-block; text-decoration: none; }
 .mfig { margin: 14px 0 0; }
 .mfig img { display: block; width: 100%; height: auto; border-radius: 10px; border: 1px solid var(--line); background: #ececea; }
 .mfig figcaption { font: 400 13px/1.5 var(--f-sans); color: var(--muted); margin-top: 8px; max-width: 46em; }
+.vx-sub { font-size: 14px; color: var(--muted); margin: 0 0 12px; max-width: 46em; }
+.vx-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 12px; }
+.vx-card { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; transition: border-color .2s, background .2s; }
+.vx-card.on { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 7%, var(--panel)); }
+.vx-card .k { font: 500 10.5px/1 var(--f-mono); text-transform: uppercase; letter-spacing: .09em; }
+.vx-card p { margin: 6px 0 0; font-size: 14px; line-height: 1.45; }
+.vx-pos { color: var(--ink); } .vx-vel { color: var(--blue); } .vx-acc { color: var(--accent); }
+table.vx-tbl { min-width: 560px; } table.vx-tbl td, table.vx-tbl th { text-align: left; }
+#vx-sec input[type=range] { accent-color: var(--accent); width: 180px; }
+#vx-sec .screen canvas { cursor: default; }
+#vx-sec .seg { margin-top: 10px; }
+@media (max-width: 700px) { .vx-cards { grid-template-columns: 1fr; } }
 .mpaste { margin-top: 12px; }
 .mpaste summary { cursor: pointer; padding: 4px 0; }
 .mpaste textarea { display: block; width: 100%; margin: 8px 0; font: 400 12.5px/1.5 var(--f-mono); padding: 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); color: var(--ink); resize: vertical; }
@@ -441,6 +455,82 @@ footer { padding-top: 40px; font: 400 11px/1.6 var(--f-mono); text-transform: up
         </figure>
         <div class="note try">Press <kbd>load the Rhodes N30 · D3 file</kbd>. At the 12 mm strike the note (mode 4, 165 Hz in this model) is the strongest mode, but the tone bar's first bending at 511 Hz is only about 6 dB below it and the tine's second bending at 1216 Hz about 9 dB below. Both die away much faster than the note: together they make the bright attack, the Rhodes "bark". Switch to <b>24 mm</b>: the hammer now hits where the tine's first bending moves more, the note gets about 5 times (15 dB) stronger, and the tone bar falls back to about 20 dB below it, so the attack is rounder. Switch to <b>6 mm</b>, right next to the block: the tone bar becomes the loudest mode, about 5 dB above the note.</div>
         <div class="note">To make a file for your own part, press <kbd>download template</kbd>. The template is a filled-in example with an <code>instructions</code> block that explains every step (you can hand it to a person, a script or an AI model together with the solver output), and a <code>figure.spec</code> block that describes the drawing to make from the STEP file in the same style as the one above: canvas, isometric view, shading, labels, the coloured strike arrows. Put the image's path in <code>figure.src</code> and the lab shows it when the file loads. The full field list is in <a href="MODAL_FORMAT.md">MODAL_FORMAT.md</a>.</div>
+        <div id="vx-sec">
+        <h3><span class="n">8.4</span>how far, how fast, how sudden</h3>
+        <div class="prose">
+          <p>Every mode is a plain back-and-forth swing. You can describe that swing in three ways: <b class="vx-pos">how far</b> the point moves (position, or displacement), <b class="vx-vel">how fast</b> it moves (speed, or velocity), and <b class="vx-acc">how suddenly</b> its speed changes (acceleration). Different listeners react to different ones, and that changes which modes you hear.</p>
+        </div>
+
+        <!-- figure 1 -->
+        <div class="lab">
+          <div class="lab-top"><span class="lab-name">1 · one swing, three ways to describe it</span></div>
+          <p class="vx-sub">The tip of a tine in slow motion. The three traces are the same swing seen by a ruler, a speedometer and a "push" meter. Watch where each one peaks.</p>
+          <div class="screen"><canvas id="vx-cv1" height="300" aria-label="animated tine tip with position, speed and acceleration traces"></canvas></div>
+          <div class="seg">
+            <button class="key" type="button" id="vx-p1">❚❚ pause</button>
+            <button class="key" type="button" id="vx-top1">jump to the top</button>
+            <button class="key" type="button" id="vx-mid1">jump to the middle</button>
+          </div>
+          <div class="vx-cards">
+            <div class="vx-card" id="vx-cTop"><span class="k">at the top of the swing</span><p><b class="vx-pos">furthest</b> from the middle · <b class="vx-vel">stopped</b> for an instant · <b class="vx-acc">pushed hardest</b>, because it is turning round</p></div>
+            <div class="vx-card" id="vx-cMid"><span class="k">passing the middle</span><p><b class="vx-pos">no distance</b> · <b class="vx-vel">fastest</b> · <b class="vx-acc">no push</b>: it just coasts through</p></div>
+            <div class="vx-card" id="vx-cRule"><span class="k">the rule</span><p>speed = distance × 2π·f<br>acceleration = speed × 2π·f<br>each step multiplies by the frequency</p></div>
+          </div>
+        </div>
+
+        <!-- figure 2 -->
+        <div class="lab">
+          <div class="lab-top"><span class="lab-name">2 · same swing, higher note</span></div>
+          <p class="vx-sub">Two tips that swing exactly the same distance, one at a higher frequency. The faster one has to cover the same distance in less time, so it moves faster, and it has to turn round more often, so it is pushed much harder.</p>
+          <div class="screen"><canvas id="vx-cv2" height="330" aria-label="two tines side by side with bars for distance, speed and acceleration"></canvas></div>
+          <div class="seg">
+            <span class="ctl-label">right one is</span>
+            <input type="range" id="vx-r2" min="1" max="8" step="0.01" value="3.1" aria-label="frequency ratio">
+            <span class="ctl-label" id="vx-r2v">×3.1 the frequency</span>
+          </div>
+          <div class="seg">
+            <span class="ctl-label">swing of the right one</span>
+            <button class="key" type="button" data-amp="same" aria-pressed="true">same as the left</button>
+            <button class="key" type="button" data-amp="r12">as the hammer gives it · rhodes 12 mm</button>
+            <button class="key" type="button" data-amp="r24">rhodes 24 mm</button>
+          </div>
+          <div class="readout" id="vx-ro2"></div>
+        </div>
+
+        <div class="prose">
+          <p>So with the <b>same swing</b>, twice the frequency means twice the speed and <b>four times</b> the acceleration; three times the frequency, nine times. But a real tine does not swing the same in every mode. Higher modes are stiffer, and the same hammer blow bends them less. Press the two Rhodes buttons above: the right tip is then the tone bar's first bending at 511 Hz, the left one the note at 165 Hz, with the swings the simulation gives. At 12 mm the small, fast swing still wins in acceleration. At 24 mm the note swings so much more that it wins everywhere.</p>
+        </div>
+
+        <!-- figure 3 -->
+        <div class="lab">
+          <div class="lab-top"><span class="lab-name">3 · who is listening?</span></div>
+          <p class="vx-sub">The Rhodes N30 · D3 file, all 15 modes at the moment of the hammer blow. Pick a listener: each step to the right tilts the whole picture up by 6 dB per octave, so the high modes come forward.</p>
+          <div class="screen"><canvas id="vx-cv3" height="300" aria-label="starting level of each mode for the chosen listener"></canvas></div>
+          <div class="seg">
+            <span class="ctl-label">listener</span>
+            <button class="key" type="button" data-out="0">ruler · position</button>
+            <button class="key" type="button" data-out="1" aria-pressed="true">magnetic pickup · speed</button>
+            <button class="key" type="button" data-out="2">air · acceleration</button>
+          </div>
+          <div class="seg">
+            <span class="ctl-label">strike</span>
+            <button class="key" type="button" data-st="6">6 mm</button>
+            <button class="key" type="button" data-st="12" aria-pressed="true">12 mm</button>
+            <button class="key" type="button" data-st="24">24 mm</button>
+            <button class="key hot" type="button" id="vx-play3">▶ listen</button>
+          </div>
+          <div class="readout" id="vx-ro3"></div>
+        </div>
+
+        <div class="tbl-wrap"><table class="vx-tbl">
+          <tr><th>listener</th><th>reacts to</th><th>everyday picture</th><th>button in the lab</th></tr>
+          <tr><td>Wurlitzer (electrostatic), FE viewer</td><td class="vx-pos"><b>how far</b></td><td>a dimmer: its position sets the light</td><td>displacement</td></tr>
+          <tr><td>Rhodes, guitar (magnet + coil)</td><td class="vx-vel"><b>how fast</b></td><td>a bicycle dynamo: no riding, no light</td><td>velocity (pickup)</td></tr>
+          <tr><td>the air, your ear, a microphone</td><td class="vx-acc"><b>how suddenly</b></td><td>a clap is loud, a slow wave of the hand is silent</td><td>acceleration (air)</td></tr>
+        </table></div>
+
+        <div class="note try">Try the air listener at 12 mm: the tine's second bending at 1216 Hz becomes the loudest mode, about 9 dB above the note. It dies within a second (T60 0.8 s against 6.7 s for the note), so you hear it as a short bright "ping" on top of the note. Through the pickup the same mode is 9 dB below the note, which is one reason a Rhodes sounds rounder through its amp than right next to the tines.</div>
+        </div>
         <div class="note">Check your tool before trusting the numbers. Set the display deformation to 2 mm: if the energy becomes four times bigger (0.048 J instead of 0.012 J), the value is the mode's strain energy at that scale, and the formulas above apply. The model leaves out the hammer's bounce, the exact strike and pickup points (only approximated by <i>w</i>), the pickup's non-linearity and the air. It is a well-founded first sketch of the sound, not a recording.</div>
       </div>
     </section>
@@ -1485,6 +1575,183 @@ const secIO = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersect
 document.querySelectorAll("section.ch").forEach(s => secIO.observe(s));
 // open in a working state: analyse the piano-string example
 document.querySelector('[data-ex="piano"]').click();
+/* ---- 8.4 how far, how fast, how sudden: position, speed and acceleration of a mode ---- */
+(() => {
+const C = {};
+function readColors() { const cs = getComputedStyle(document.documentElement); ["screen", "screen-ink", "screen-dim", "screen-grid", "screen-accent", "s-blue", "s-green"].forEach(k => C[k] = cs.getPropertyValue("--" + k).trim()); }
+readColors(); matchMedia("(prefers-color-scheme: dark)").addEventListener("change", readColors);
+function fit(cv) {
+  const r = devicePixelRatio || 1, w = cv.clientWidth, h = +cv.getAttribute("height");
+  if (cv.width !== Math.round(w * r)) { cv.width = Math.round(w * r); cv.height = Math.round(h * r); cv.style.height = h + "px"; }
+  const g = cv.getContext("2d"); g.setTransform(r, 0, 0, r, 0, 0); g.clearRect(0, 0, w, h); g.textAlign = "left"; g.textBaseline = "alphabetic"; return [g, w, h];
+}
+const mono = (px, wt = 400) => `${wt} ${px}px 'IBM Plex Mono', monospace`;
+const COL = () => ({ pos: C["screen-ink"], vel: C["s-blue"], acc: C["screen-accent"] });
+
+// a cantilever tine: clamp block at x0, tip at x0+L, tip deflection y (px, up positive)
+function drawTine(g, x0, yc, L, y, opt = {}) {
+  g.fillStyle = C["screen-dim"]; g.fillRect(x0 - 26, yc - 22, 26, 44);
+  g.strokeStyle = C["screen-grid"]; g.setLineDash([3, 4]); g.lineWidth = 1; g.beginPath(); g.moveTo(x0, yc); g.lineTo(x0 + L + 20, yc); g.stroke(); g.setLineDash([]);
+  g.strokeStyle = C["screen-ink"]; g.lineWidth = 4; g.lineCap = "round"; g.beginPath();
+  for (let i = 0; i <= 40; i++) { const s = i / 40, sh = s * s * (3 - s) / 2; g.lineTo(x0 + s * L, yc - y * sh); }
+  g.stroke();
+  g.fillStyle = opt.dot || C["screen-accent"]; g.beginPath(); g.arc(x0 + L, yc - y, 6, 0, TAU); g.fill();
+}
+
+/* ---------- figure 1 ---------- */
+const F1 = { f: 0.35, t: 0, run: true, hist: [] };
+function fig1(dt) {
+  if (F1.run) F1.t += dt;
+  const [g, w, h] = fit($("vx-cv1")), col = COL(), A = 70, ph = TAU * F1.f * F1.t;
+  const pos = Math.sin(ph), vel = Math.cos(ph), acc = -Math.sin(ph);
+  g.font = mono(10, 500); g.fillStyle = C["screen-ink"]; g.textBaseline = "top"; g.fillText("TINE TIP · SLOWED DOWN ABOUT 500×", 12, 10);
+  const tx = Math.min(260, w * 0.32);
+  drawTine(g, 40, h / 2 + 10, tx - 70, A * pos);
+  // little arrows at the tip: speed (blue) and push (orange)
+  const tipX = 40 + tx - 70, tipY = h / 2 + 10 - A * pos;
+  const arrow = (x, y, dy, c) => { if (Math.abs(dy) < 3) return; g.strokeStyle = c; g.fillStyle = c; g.lineWidth = 2.5; g.beginPath(); g.moveTo(x, y); g.lineTo(x, y - dy); g.stroke(); const s = Math.sign(dy); g.beginPath(); g.moveTo(x - 5, y - dy + 7 * s); g.lineTo(x + 5, y - dy + 7 * s); g.lineTo(x, y - dy); g.fill(); };
+  arrow(tipX + 16, tipY, 40 * vel, col.vel); arrow(tipX + 30, tipY, 40 * acc, col.acc);
+  g.font = mono(9.5); g.fillStyle = col.vel; g.fillText("↕ BLUE ARROW = SPEED", 12, h - 36); g.fillStyle = col.acc; g.fillText("↕ ORANGE ARROW = PUSH", 12, h - 22);
+  // traces
+  const x0 = tx + 20, x1 = w - 16, rows = [["POSITION · HOW FAR", "ruler", pos, col.pos], ["SPEED · HOW FAST", "speedometer", vel, col.vel], ["ACCELERATION · HOW SUDDEN", "push meter", acc, col.acc]];
+  const rh = (h - 30) / 3, span = 2.2 / F1.f;   // seconds shown
+  rows.forEach(([name, meter, now, c], k) => {
+    const yc = 30 + rh * k + rh / 2, amp = rh * 0.34;
+    g.strokeStyle = C["screen-grid"]; g.lineWidth = 1; g.beginPath(); g.moveTo(x0, yc); g.lineTo(x1, yc); g.stroke();
+    g.strokeStyle = c; g.lineWidth = 2; g.beginPath();
+    for (let x = x0; x <= x1 - 60; x++) { const tt = F1.t - (x1 - 60 - x) / (x1 - 60 - x0) * span, p = TAU * F1.f * tt; const v = [Math.sin(p), Math.cos(p), -Math.sin(p)][k]; g.lineTo(x, yc - amp * v); }
+    g.stroke();
+    g.fillStyle = c; g.beginPath(); g.arc(x1 - 60, yc - amp * now, 4.5, 0, TAU); g.fill();
+    // meter bar at the right
+    g.fillStyle = C["screen-grid"]; g.fillRect(x1 - 34, yc - amp, 18, 2 * amp);
+    g.fillStyle = c; const bh = amp * now; g.fillRect(x1 - 34, Math.min(yc, yc - bh), 18, Math.abs(bh));
+    g.font = mono(9.5, 500); g.fillStyle = c; g.textBaseline = "top"; g.fillText(name, x0, yc - rh / 2 + 4);
+    g.font = mono(9); g.fillStyle = C["screen-dim"]; g.textAlign = "right"; g.fillText(meter.toUpperCase(), x1 - 4, yc - rh / 2 + 4); g.textAlign = "left";
+  });
+  const s = Math.abs(pos);
+  $("vx-cTop").classList.toggle("on", s > 0.95); $("vx-cMid").classList.toggle("on", s < 0.2);
+}
+$("vx-p1").addEventListener("click", e => { F1.run = !F1.run; e.target.textContent = F1.run ? "❚❚ pause" : "▶ play"; });
+const jump = frac => { F1.t = frac / F1.f; F1.run = false; $("vx-p1").textContent = "▶ play"; };
+$("vx-top1").addEventListener("click", () => jump(0.25));
+$("vx-mid1").addEventListener("click", () => jump(0.5));
+
+/* ---------- figure 2 ---------- */
+// Rhodes file, starting levels through the pickup (dB re the note), for the tone bar's 1st bending (510.83 Hz) vs the note (164.65 Hz)
+const RH2 = { r12: { vdb: -5.7 }, r24: { vdb: -19.8 } }, RATIO = 510.83 / 164.65;
+const F2 = { t: 0, amp: "same" };
+function fig2(dt) {
+  F2.t += dt;
+  const [g, w, h] = fit($("vx-cv2")), col = COL(), r = +$("vx-r2").value, base = 0.3;
+  let a2 = 1;
+  if (F2.amp !== "same") a2 = Math.pow(10, (RH2[F2.amp].vdb - 20 * Math.log10(RATIO)) / 20);   // displacement ratio = velocity ratio / frequency ratio
+  const A = 62, half = w / 2;
+  g.font = mono(10, 500); g.textBaseline = "top";
+  const labL = F2.amp === "same" ? "LOW · ×1" : "THE NOTE · 165 HZ", labR = F2.amp === "same" ? "HIGH · ×" + r.toFixed(1) : "TONE BAR · 511 HZ · " + (F2.amp === "r12" ? "12" : "24") + " MM STRIKE";
+  [[0, 1, 1, labL], [1, r, a2, labR]].forEach(([k, fr, am, lab]) => {
+    const x0 = half * k + 50, L = half - 120;
+    g.fillStyle = C["screen-ink"]; g.fillText(lab, half * k + 14, 10);
+    drawTine(g, x0, 105, L, A * am * Math.sin(TAU * base * fr * F2.t), { dot: k ? C["screen-accent"] : C["screen-ink"] });
+    // swing range marks
+    g.strokeStyle = C["screen-dim"]; g.lineWidth = 1; g.beginPath(); [-1, 1].forEach(s => { g.moveTo(x0 + L + 12, 105 - s * A * am); g.lineTo(x0 + L + 24, 105 - s * A * am); }); g.stroke();
+  });
+  g.strokeStyle = C["screen-grid"]; g.beginPath(); g.moveTo(half, 30); g.lineTo(half, 190); g.stroke();
+  // bars: per row, normalised to the larger of the two
+  const vals = [["HOW FAR", 1, a2, col.pos], ["HOW FAST", 1, a2 * r, col.vel], ["HOW SUDDEN", 1, a2 * r * r, col.acc]];
+  const bx = 120, bw = w - bx - 100; let y = 210;
+  g.font = mono(9); g.fillStyle = C["screen-dim"]; g.textBaseline = "top"; g.fillText("GREY BAR = LEFT · COLOURED BAR = RIGHT · RIGHT COMPARED WITH LEFT →", bx, 192);
+  vals.forEach(([name, L1, R1, c]) => {
+    const m = Math.max(L1, R1);
+    g.font = mono(9.5, 500); g.fillStyle = c; g.textBaseline = "middle"; g.textAlign = "left"; g.fillText(name, 14, y + 18);
+    [[L1, C["screen-dim"], "low"], [R1, c, "high"]].forEach(([v, cc], j) => {
+      const yy = y + j * 18 + 4; g.fillStyle = C["screen-grid"]; g.fillRect(bx, yy, bw, 12); g.fillStyle = cc; g.fillRect(bx, yy, Math.max(1.5, bw * v / m), 12);
+    });
+    g.font = mono(10, 500); g.fillStyle = C["screen-ink"]; g.textAlign = "left";
+    const rat = R1 / L1, q = rat >= 1 ? rat : 1 / rat; g.fillText(Math.abs(rat - 1) < 0.005 ? "SAME" : q.toFixed(q < 10 ? 1 : 0) + "× " + (rat >= 1 ? "MORE" : "LESS"), bx + bw + 10, y + 18);
+    y += 42;
+  });
+  g.textAlign = "left";
+}
+$("vx-r2").addEventListener("input", () => { setRatio(); });
+function setRatio() { $("vx-r2v").textContent = "×" + (+$("vx-r2").value).toFixed(1) + " the frequency"; ro2(); }
+function ro2() {
+  const r = +$("vx-r2").value;
+  $("vx-ro2").innerHTML = "<span>" + (F2.amp === "same"
+    ? `same swing · ×${r.toFixed(1)} the frequency → <b>×${r.toFixed(1)}</b> the speed and <b>×${(r * r).toFixed(1)}</b> the acceleration`
+    : (F2.amp === "r12" ? "12 mm strike · the tone bar mode swings 6× less than the note, but vibrates 3.1× as often: <b>about 2× less speed, 1.6× more acceleration</b>"
+                        : "24 mm strike · the tone bar mode swings 30× less than the note: <b>10× less speed, still 3× less acceleration</b>")) + "</span>";
+}
+document.querySelectorAll("[data-amp]").forEach(b => b.addEventListener("click", () => {
+  F2.amp = b.dataset.amp; document.querySelectorAll("[data-amp]").forEach(o => o.setAttribute("aria-pressed", String(o === b)));
+  $("vx-r2").disabled = F2.amp !== "same"; if (F2.amp !== "same") $("vx-r2").value = RATIO.toFixed(2); setRatio();
+}));
+setRatio();
+
+/* ---------- figure 3 ---------- */
+// from data/rhodes_N30_D3.sfg.json: frequency, T60, label, starting level through the pickup (velocity, dB re loudest) for each strike
+const M3 = {
+  f: [53.99, 164.65, 510.83, 674.23, 699.72, 1216.18, 1228.53, 1321.9, 1487.17, 2477.64, 2567.07, 3123.05, 3399.85, 3510.22, 3516.17],
+  T60: [.407, 6.679, 2.07, 1.199, 1.403, .822, .785, .049, .134, .14, .023, .14, .016, .27, .237],
+  lab: ["rocking", "the note", "tone bar 1st bending", "tone bar torsion", "tone bar sideways", "tine 2nd bending", "tine 2nd bending ↔", "mounting", "tone bar", "tone bar", "mounting", "tone bar", "mounting", "tine", "tine"],
+  v: {
+    6: [-8.8, -4.8, 0, -29.3, -31.2, -22.5, -73.4, -40.1, -42.2, -33.2, -49.5, -49.9, -64.1, -34.8, -34.4],
+    12: [-13.9, 0, -5.7, -35.3, -36.8, -8.6, -56.0, -47.2, -54.7, -37.9, -53.5, -52.3, -59.5, -26.4, -25.8],
+    24: [-25.9, 0, -19.8, -49.1, -50.3, -9.8, -56.1, -50.1, -65.8, -54.6, -69.3, -63.9, -67.0, -32.2, -31.5]
+  }
+};
+const F3 = { out: 1, st: 12, shown: null };
+function levels3() {
+  const raw = M3.v[F3.st].map((d, i) => d + 20 * (F3.out - 1) * Math.log10(M3.f[i] / M3.f[1]));   // ×ω per step, relative to the note
+  const mx = Math.max(...raw); return raw.map(d => d - mx);
+}
+function fig3(dt) {
+  const target = levels3();
+  if (!F3.shown) F3.shown = target.slice();
+  F3.shown = F3.shown.map((v, i) => v + (target[i] - v) * Math.min(1, dt * 8));   // ease the tilt so you can see it move
+  const [g, w, h] = fit($("vx-cv3")), P = { l: 40, r: 16, t: 46, b: 26 }, lo = 40, hi = 5000;
+  const X = f => P.l + Math.log(f / lo) / Math.log(hi / lo) * (w - P.l - P.r), Y = d => P.t + (-Math.max(-60, d)) / 60 * (h - P.t - P.b);
+  g.font = mono(10, 500); g.fillStyle = C["screen-ink"]; g.textBaseline = "top"; g.fillText("STARTING LEVEL OF EACH MODE", 10, 9);
+  g.fillStyle = C["screen-dim"]; g.textAlign = "right"; g.fillText(["RULER · POSITION · TILT −6 DB/OCTAVE (DASHED)", "PICKUP · SPEED", "AIR · ACCELERATION · TILT +6 DB/OCTAVE (DASHED)"][F3.out], w - 10, 9); g.textAlign = "left";
+  g.font = mono(9.5); g.strokeStyle = C["screen-grid"]; g.lineWidth = 1; g.beginPath();
+  for (let d = 0; d >= -60; d -= 12) { g.moveTo(P.l, Y(d) + .5); g.lineTo(w - P.r, Y(d) + .5); g.fillStyle = C["screen-dim"]; g.textBaseline = "middle"; g.textAlign = "right"; g.fillText(String(d), P.l - 6, Y(d)); }
+  g.stroke(); g.textAlign = "center"; g.textBaseline = "top";
+  for (const f of [50, 100, 200, 500, 1000, 2000, 5000]) { g.fillText(f >= 1000 ? f / 1000 + "k" : String(f), X(f), h - P.b + 6); }
+  // the tilt: a line of +6 dB per octave per step, through the note
+  if (F3.out !== 1) {
+    const s = (F3.out - 1) * 20, n = F3.shown[1];
+    g.save(); g.beginPath(); g.rect(P.l, P.t, w - P.l - P.r, h - P.t - P.b); g.clip();
+    g.strokeStyle = C["screen-dim"]; g.setLineDash([5, 5]); g.beginPath(); g.moveTo(X(lo), Y(n + s * Math.log10(lo / M3.f[1]))); g.lineTo(X(hi), Y(n + s * Math.log10(hi / M3.f[1]))); g.stroke(); g.setLineDash([]); g.restore();
+    g.fillStyle = C["screen-dim"]; g.textAlign = "left"; g.textBaseline = "top"; 
+  }
+  const top = F3.shown.indexOf(Math.max(...F3.shown));
+  F3.shown.forEach((d, i) => {
+    const x = X(M3.f[i]), y = Y(d);
+    g.fillStyle = i === 1 ? C["screen-accent"] : C["screen-ink"]; g.fillRect(x - 2, y, 4, h - P.b - y);
+  });
+  [1, top].forEach((i, k) => { if (k && i === 1) return; const x = X(M3.f[i]), y = Y(F3.shown[i]); g.fillStyle = i === 1 ? C["screen-accent"] : C["screen-ink"]; g.textAlign = "center"; g.textBaseline = "bottom"; g.font = mono(9.5, 500); g.fillText((i === 1 ? "NOTE " : "LOUDEST ") + Math.round(M3.f[i]) + " HZ", Math.min(w - 60, Math.max(60, x)), y - 4 - k * 0); });
+}
+function ro3() {
+  const L = levels3(), top = L.indexOf(0), n = L[1];
+  $("vx-ro3").innerHTML = `<span>loudest at the start <b>${Math.round(M3.f[top])} Hz · ${M3.lab[top]}</b> · the note <b>${n === 0 ? "is the loudest" : Math.abs(n).toFixed(0) + " dB below it"}</b></span>`;
+}
+document.querySelectorAll("[data-out]").forEach(b => b.addEventListener("click", () => { F3.out = +b.dataset.out; document.querySelectorAll("[data-out]").forEach(o => o.setAttribute("aria-pressed", String(o === b))); ro3(); }));
+document.querySelectorAll("[data-st]").forEach(b => b.addEventListener("click", () => { F3.st = +b.dataset.st; document.querySelectorAll("[data-st]").forEach(o => o.setAttribute("aria-pressed", String(o === b))); ro3(); }));
+ro3();
+$("vx-play3").addEventListener("click", () => {
+  const sr = 44100, n = Math.round(sr * 2.5), x = new Float32Array(n);
+  levels3().forEach((d, i) => { const a = Math.pow(10, d / 20), om = TAU * M3.f[i] / sr, k = 6.91 / M3.T60[i] / sr; for (let j = 0; j < n; j++) x[j] += a * Math.sin(om * j) * Math.exp(-k * j); });
+  for (let j = 0; j < n; j++) x[j] *= Math.min(1, j / (sr * 0.002)) * Math.min(1, (n - j) / (sr * 0.1));
+  playArray(x, sr);   // the page's player: volume slider and stop work
+});
+
+/* ---------- loop ---------- */
+let last = performance.now();
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+if (reduce) { F1.run = false; $("vx-p1").textContent = "▶ play"; F1.t = 0.25 / F1.f; }
+let seen = false, raf = 0;   // animate only while the section is on screen
+function loop(now) { const dt = Math.min(0.05, (now - last) / 1000); last = now; fig1(dt); fig2(reduce ? 0 : dt); fig3(dt); raf = seen ? requestAnimationFrame(loop) : 0; }
+new IntersectionObserver(es => { seen = es.some(e => e.isIntersecting); if (seen && !raf) { last = performance.now(); raf = requestAnimationFrame(loop); } }, { rootMargin: "100px" }).observe($("vx-sec"));
+})();
 })();
 </script>
 </body>
