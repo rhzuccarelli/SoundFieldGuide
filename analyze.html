@@ -169,6 +169,8 @@ a.key { display: inline-block; text-decoration: none; }
 table.vx-tbl { min-width: 560px; } table.vx-tbl td, table.vx-tbl th { text-align: left; }
 #vx-sec input[type=range] { accent-color: var(--accent); width: 180px; }
 #vx-sec .screen canvas { cursor: default; }
+#vx-cv1, #vx-cv3 { height: 300px; }
+#vx-cv2 { height: 330px; }
 #vx-sec .seg { margin-top: 10px; }
 @media (max-width: 700px) { .vx-cards { grid-template-columns: 1fr; } }
 .mpaste { margin-top: 12px; }
@@ -465,7 +467,7 @@ footer { padding-top: 40px; font: 400 11px/1.6 var(--f-mono); text-transform: up
         <div class="lab">
           <div class="lab-top"><span class="lab-name">1 · one swing, three ways to describe it</span></div>
           <p class="vx-sub">The tip of a tine in slow motion. The three traces are the same swing seen by a ruler, a speedometer and a "push" meter. Watch where each one peaks.</p>
-          <div class="screen"><canvas id="vx-cv1" height="300" aria-label="animated tine tip with position, speed and acceleration traces"></canvas></div>
+          <div class="screen"><canvas id="vx-cv1" aria-label="animated tine tip with position, speed and acceleration traces"></canvas></div>
           <div class="seg">
             <button class="key" type="button" id="vx-p1">❚❚ pause</button>
             <button class="key" type="button" id="vx-top1">jump to the top</button>
@@ -482,7 +484,7 @@ footer { padding-top: 40px; font: 400 11px/1.6 var(--f-mono); text-transform: up
         <div class="lab">
           <div class="lab-top"><span class="lab-name">2 · same swing, higher note</span></div>
           <p class="vx-sub">Two tips that swing exactly the same distance, one at a higher frequency. The faster one has to cover the same distance in less time, so it moves faster, and it has to turn round more often, so it is pushed much harder.</p>
-          <div class="screen"><canvas id="vx-cv2" height="330" aria-label="two tines side by side with bars for distance, speed and acceleration"></canvas></div>
+          <div class="screen"><canvas id="vx-cv2" aria-label="two tines side by side with bars for distance, speed and acceleration"></canvas></div>
           <div class="seg">
             <span class="ctl-label">right one is</span>
             <input type="range" id="vx-r2" min="1" max="8" step="0.01" value="3.1" aria-label="frequency ratio">
@@ -505,7 +507,7 @@ footer { padding-top: 40px; font: 400 11px/1.6 var(--f-mono); text-transform: up
         <div class="lab">
           <div class="lab-top"><span class="lab-name">3 · who is listening?</span></div>
           <p class="vx-sub">The Rhodes N30 · D3 file, all 15 modes at the moment of the hammer blow. Pick a listener: each step to the right tilts the whole picture up by 6 dB per octave, so the high modes come forward.</p>
-          <div class="screen"><canvas id="vx-cv3" height="300" aria-label="starting level of each mode for the chosen listener"></canvas></div>
+          <div class="screen"><canvas id="vx-cv3" aria-label="starting level of each mode for the chosen listener"></canvas></div>
           <div class="seg">
             <span class="ctl-label">listener</span>
             <button class="key" type="button" data-out="0">ruler · position</button>
@@ -1581,8 +1583,8 @@ const C = {};
 function readColors() { const cs = getComputedStyle(document.documentElement); ["screen", "screen-ink", "screen-dim", "screen-grid", "screen-accent", "s-blue", "s-green"].forEach(k => C[k] = cs.getPropertyValue("--" + k).trim()); }
 readColors(); matchMedia("(prefers-color-scheme: dark)").addEventListener("change", readColors);
 function fit(cv) {
-  const r = devicePixelRatio || 1, w = cv.clientWidth, h = +cv.getAttribute("height");
-  if (cv.width !== Math.round(w * r)) { cv.width = Math.round(w * r); cv.height = Math.round(h * r); cv.style.height = h + "px"; }
+  const r = devicePixelRatio || 1, w = cv.clientWidth, h = cv.clientHeight;
+  if (cv.width !== Math.round(w * r) || cv.height !== Math.round(h * r)) { cv.width = Math.round(w * r); cv.height = Math.round(h * r); }
   const g = cv.getContext("2d"); g.setTransform(r, 0, 0, r, 0, 0); g.clearRect(0, 0, w, h); g.textAlign = "left"; g.textBaseline = "alphabetic"; return [g, w, h];
 }
 const mono = (px, wt = 400) => `${wt} ${px}px 'IBM Plex Mono', monospace`;
